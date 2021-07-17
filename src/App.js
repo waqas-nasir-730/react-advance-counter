@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import "./styles.css";
+import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
 import { AppBar } from "@material-ui/core";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
@@ -7,6 +8,7 @@ import IconButton from "@material-ui/core/IconButton";
 import MenuIcon from "@material-ui/icons/Menu";
 import Counter from "./components/Counter";
 import Config from "./components/Config";
+import DarkModeToggle from "react-dark-mode-toggle";
 
 class App extends Component {
   constructor(props) {
@@ -16,7 +18,8 @@ class App extends Component {
       incBy: 1,
       incLimit: 100,
       decLimit: 0,
-      errors: []
+      errors: [],
+      isDark: false
     };
   }
 
@@ -40,6 +43,12 @@ class App extends Component {
         }
       });
     }
+  };
+
+  setIsDarkMode = () => {
+    this.setState({
+      isDark: !this.state.isDark
+    });
   };
 
   hanleIncOrDec = (operation) => {
@@ -67,37 +76,54 @@ class App extends Component {
         ? true
         : false;
 
-    return (
-      <div className="App">
-        <AppBar position="static">
-          <Toolbar variant="dense">
-            <IconButton edge="start" color="inherit" aria-label="menu">
-              <MenuIcon />
-            </IconButton>
-            <Typography variant="h6" color="inherit">
-              React Counter App
-            </Typography>
-          </Toolbar>
-        </AppBar>
+    const color = this.state.isDark ? "black" : "white";
+    document.body.style.background = color;
 
-        <div className="container">
-          <Counter
-            state={this.state}
-            hanleIncOrDec={this.hanleIncOrDec}
-            disableInc={disableInc}
-            disableDec={disableDec}
-          />
-          <Config
-            incLimit={this.state.incLimit}
-            decLimit={this.state.decLimit}
-            inputHandler={this.inputHandler}
-            incBy={this.state.incBy}
-            disableInc={disableInc}
-            disableDec={disableDec}
-            errors={this.state.errors}
-          />
+    let darkTheme = createMuiTheme({
+      palette: {
+        type: this.state.isDark ? "dark" : "light"
+      }
+    });
+
+    return (
+      <ThemeProvider theme={darkTheme}>
+        <div className="App">
+          <AppBar position="static">
+            <Toolbar variant="dense">
+              <IconButton edge="start" color="inherit" aria-label="menu">
+                <MenuIcon />
+              </IconButton>
+              <Typography variant="h6" color="inherit">
+                React Counter App
+              </Typography>
+              <DarkModeToggle
+                className="ml-4"
+                onChange={this.setIsDarkMode}
+                checked={this.state.isDark}
+                size={60}
+              />
+            </Toolbar>
+          </AppBar>
+
+          <div className="container">
+            <Counter
+              state={this.state}
+              hanleIncOrDec={this.hanleIncOrDec}
+              disableInc={disableInc}
+              disableDec={disableDec}
+            />
+            <Config
+              incLimit={this.state.incLimit}
+              decLimit={this.state.decLimit}
+              inputHandler={this.inputHandler}
+              incBy={this.state.incBy}
+              disableInc={disableInc}
+              disableDec={disableDec}
+              errors={this.state.errors}
+            />
+          </div>
         </div>
-      </div>
+      </ThemeProvider>
     );
   }
 }
