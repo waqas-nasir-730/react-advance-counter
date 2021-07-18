@@ -42,7 +42,6 @@ const Counter = ({ state, disableInc, disableDec, hanleIncOrDec }) => {
 const styles = {
   card: {
     marginTop: 30,
-    width: "40%",
     marginLeft: "auto",
     marginRight: "auto"
   },
